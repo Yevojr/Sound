@@ -1,4 +1,4 @@
-// Samenklank — UXD Playground I, Sound Design experiment
+// In Tune — UXD Playground I, Sound Design experiment
 // Two voices start apart in pitch, tempo, sound and stereo position,
 // and grow towards each other until they play one chord.
 // Everything is generated live with Tone.js.
@@ -702,7 +702,7 @@ const stop = async (finished) => {
     recording = false;
     const blob = await recorder.stop();
     download.href = URL.createObjectURL(blob);
-    download.download = "samenklank-" + chosen.a + "-" + chosen.b + ".webm";
+    download.download = "in-tune-" + chosen.a + "-" + chosen.b + ".webm";
     download.hidden = false;
   }
 };
@@ -725,7 +725,7 @@ themeBtn.addEventListener("click", () => {
   const next = currentTheme() === "dark" ? "light" : "dark";
   document.documentElement.setAttribute("data-theme", next);
   try {
-    localStorage.setItem("samenklank:theme", next);
+    localStorage.setItem("in-tune:theme", next);
   } catch (e) {}
   updateThemeBtn();
 });

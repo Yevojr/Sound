@@ -6,11 +6,11 @@
       name="viewport"
       content="width=device-width, initial-scale=1, viewport-fit=cover"
     />
-    <title>Samenklank</title>
+    <title>In Tune</title>
     <!-- Applies the saved light/dark choice before the page draws, so it doesn't flash -->
     <script>
       try {
-        var saved = localStorage.getItem("samenklank:theme");
+        var saved = localStorage.getItem("in-tune:theme");
         if (saved === "light" || saved === "dark")
           document.documentElement.setAttribute("data-theme", saved);
       } catch (e) {}
@@ -27,7 +27,7 @@
     <main class="wrap">
       <header class="head">
         <div class="head-top">
-          <h1>Samenklank</h1>
+          <h1>In Tune</h1>
           <button class="theme-btn" id="themeBtn" type="button">
             Dark mode
           </button>
