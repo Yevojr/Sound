@@ -3,7 +3,7 @@
 // and grow towards each other until they play one chord.
 // Everything is generated live with Tone.js.
 
-/* ================= TIMING ================= */
+/*  TIMING  */
 
 const BPM = 96;
 const BEAT = 60 / BPM; // one beat = 0.625 s
@@ -31,7 +31,7 @@ const convergence = (t) => {
   return x * x * (3 - 2 * x);
 };
 
-/* ================= WHAT "APART" MEANS ================= */
+/*  WHAT "APART" MEANS  */
 // Change these numbers to change how far apart the voices start.
 
 const APART = {
@@ -43,7 +43,7 @@ const APART = {
   panB: 1, // voice B only in the right ear (both end up in the middle: both ears)
 };
 
-/* ================= MIX ================= */
+/*  MIX  */
 // How loud each voice is, in dB, while clashing and once together.
 // 0 = unchanged, +3 is noticeably louder, -3 noticeably softer.
 
@@ -54,7 +54,7 @@ const MIX = {
   togetherB: -2,
 };
 
-/* ================= SOUND PALETTE ================= */
+/*  SOUND PALETTE  */
 // Every sound a voice can have. Each one goes through the same chain:
 // synth -> distortion ("drive") -> lowpass filter ("cutoff") -> stereo position.
 // "apart" is how it sounds at the start, "together" how it sounds once the voices meet.
@@ -164,7 +164,7 @@ const SOUNDS = {
 // Which sound each voice uses (changed with the menus on the page)
 const chosen = { a: "buzz", b: "bell" };
 
-/* ================= AUDIO SETUP ================= */
+/*  AUDIO SETUP  */
 
 let ready = false;
 let out, recorder;
@@ -306,7 +306,7 @@ const prepareVoices = async () => {
   }
 };
 
-/* ================= THE SCORE ================= */
+/*  THE SCORE  */
 
 const A_NOTES = ["C5", "D5", "E5", "G5", "A5", "C6", "D6"];
 const B_NOTES = ["G4", "A4", "C5", "D5", "E5", "G5"];
@@ -628,7 +628,7 @@ const lockPickers = (locked) => {
 
 showChoices();
 
-/* ================= PLAYBACK ================= */
+/*  PLAYBACK  */
 
 const playBtn = document.getElementById("playBtn");
 const recBox = document.getElementById("recBox");
@@ -707,7 +707,7 @@ const stop = async (finished) => {
   }
 };
 
-/* ================= LIGHT / DARK MODE ================= */
+/*  LIGHT / DARK MODE  */
 
 const themeBtn = document.getElementById("themeBtn");
 const darkQuery = window.matchMedia("(prefers-color-scheme: dark)");
@@ -732,7 +732,7 @@ themeBtn.addEventListener("click", () => {
 darkQuery.addEventListener("change", updateThemeBtn);
 updateThemeBtn();
 
-/* ================= VISUALS ================= */
+/*  VISUALS  */
 
 const canvas = document.getElementById("viz");
 const ctx = canvas.getContext("2d");
@@ -860,7 +860,7 @@ const frame = () => {
   requestAnimationFrame(frame);
 };
 
-/* ================= READOUT ================= */
+/*  READOUT  */
 
 const clockEl = document.getElementById("clock");
 const fill = document.getElementById("fill");
