@@ -3,23 +3,23 @@
 // and grow towards each other until they play one chord.
 // Everything is generated live with Tone.js.
 
-/*  TIMING  */
+/* ================= TIMING ================= */
 
 const BPM = 96;
-const BEAT = 60 / BPM; //one beat = 0.625s
-const BAR = BEAT * 4; //one bar = 2.5s
-const S16 = BEAT / 4; //a sixteenth note
+const BEAT = 60 / BPM; // one beat = 0.625 s
+const BAR = BEAT * 4; // one bar = 2.5 s
+const S16 = BEAT / 4; // a sixteenth note
 
 // The structure of the piece, in seconds (all multiples of a bar)
 const T = {
-  bEnters: 4 * BAR, //0:10 voice B jumps in
-  backing: 8 * BAR, //0:20 drums and drone come in: full clash
-  converge: 16 * BAR, //0:40 voices start converging
-  together: 26 * BAR, //1:05 voices meet: harmony
-  outro: 40 * BAR, //1:40 outro
-  end: 42 * BAR, //1:45 end
+  bEnters: 4 * BAR, // 0:10  voice B joins
+  backing: 8 * BAR, // 0:20  drums and drone come in: full clash
+  converge: 16 * BAR, // 0:40  the voices start moving towards each other
+  together: 26 * BAR, // 1:05  they meet: harmony section
+  outro: 40 * BAR, // 1:40  final chord
+  end: 42 * BAR, // 1:45
 };
-const STOP_AT = T.end + 3; //let the last cord ring out for a few seconds
+const STOP_AT = T.end + 3; // let the last chord ring out
 
 const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
 const lerp = (a, b, x) => a + (b - a) * x;
@@ -31,21 +31,22 @@ const convergence = (t) => {
   return x * x * (3 - 2 * x);
 };
 
-/*  WHAT "APART" MEANS  */
+/* ================= WHAT "APART" MEANS ================= */
 // Change these numbers to change how far apart the voices start.
 
 const APART = {
-  centsA: -50, //voice A starts 50 cents flat...
-  centsB: 50, //...and B starts 50 cents sharp: semitone apart
-  rushA: 0.82, //voice A starts 82% of the target tempo
-  dragB: 1.37, //voice B starts 137% of the target tempo
-  panA: -0.9, //voice A only mostly in left ear
-  panB: 0.9, //voice B only mostly in right ear: (both end up in the middle: both ears)
+  centsA: -50, // voice A starts 50 cents flat...
+  centsB: 50, // ...and voice B 50 cents sharp: a semitone apart
+  rushA: 0.82, // voice A's notes come at 82% of the grid: it rushes
+  dragB: 1.37, // voice B's notes come at 137% of a beat: it drags
+  panA: -1, // voice A only in the left ear
+  panB: 1, // voice B only in the right ear (both end up in the middle: both ears)
 };
 
-/*  MIX  */
+/* ================= MIX ================= */
 // How loud each voice is, in dB, while clashing and once together.
 // 0 = unchanged, +3 is noticeably louder, -3 noticeably softer.
+
 const MIX = {
   clashA: 0,
   clashB: -3, // B a bit softer while clashing, so it doesn't drown out A
@@ -53,7 +54,7 @@ const MIX = {
   togetherB: -2,
 };
 
-/*  SOUND PALETTE  */
+/* ================= SOUND PALETTE ================= */
 // Every sound a voice can have. Each one goes through the same chain:
 // synth -> distortion ("drive") -> lowpass filter ("cutoff") -> stereo position.
 // "apart" is how it sounds at the start, "together" how it sounds once the voices meet.
@@ -160,26 +161,26 @@ const SOUNDS = {
   },
 };
 
-// Which sound each voice uses
-const chosen = { a: "buzz", b: "bell" }; //the two default sounds to use. Can be changed in the UI.
+// Which sound each voice uses (changed with the menus on the page)
+const chosen = { a: "buzz", b: "bell" };
 
-/* AUDIO SETUP */
+/* ================= AUDIO SETUP ================= */
 
 let ready = false;
 let out, recorder;
-const V = { a: null, b: null }; //the two voices: {id, synth, drive, filler, space, level, pan}
+const V = { a: null, b: null }; // the two voices: { id, sound, synth, drive, filter, space, level, pan }
 let pad, bass, kick, hat, snare, riser, riserFilter;
 let droneLow, droneHigh, droneGain;
 
 const C3 = 130.81;
 const centsToHz = (hz, cents) => hz * Math.pow(2, cents / 1200);
-//A note name like "C5", shifted by a number of cents
+// A note name like "C5", shifted by a number of cents
 const hz = (note, cents) =>
   centsToHz(Tone.Frequency(note).toFrequency(), cents);
 
 const setupAudio = async () => {
   const master = new Tone.Limiter(-1).toDestination();
-  const reverb = new Tone.Reverb({ decay: 3, wet: 0.3 });
+  const reverb = new Tone.Reverb({ decay: 4, wet: 0.3 });
   await reverb.ready;
   reverb.connect(master);
   out = master;
@@ -258,7 +259,7 @@ const setupAudio = async () => {
 const buildVoice = async (id, side) => {
   const sound = SOUNDS[id];
   const pan = new Tone.Panner({
-    pan: side === "a" ? MIX.clashA : MIX.clashB,
+    pan: side === "a" ? APART.panA : APART.panB,
     channelCount: 2,
   }).connect(out);
   const level = new Tone.Volume(side === "a" ? MIX.clashA : MIX.clashB).connect(
@@ -275,6 +276,7 @@ const buildVoice = async (id, side) => {
   const synth = sound.make().connect(drive);
   return {
     id,
+    sound,
     synth,
     drive,
     filter,
@@ -304,7 +306,7 @@ const prepareVoices = async () => {
   }
 };
 
-/* THE SCORE */
+/* ================= THE SCORE ================= */
 
 const A_NOTES = ["C5", "D5", "E5", "G5", "A5", "C6", "D6"];
 const B_NOTES = ["G4", "A4", "C5", "D5", "E5", "G5"];
@@ -567,7 +569,7 @@ const buildScore = (tr) => {
   );
 };
 
-/*  VOICE PICKERS  */
+/* ================= VOICE PICKERS ================= */
 
 const soundA = document.getElementById("soundA");
 const soundB = document.getElementById("soundB");
@@ -626,7 +628,7 @@ const lockPickers = (locked) => {
 
 showChoices();
 
-/*  PLAYBACK  */
+/* ================= PLAYBACK ================= */
 
 const playBtn = document.getElementById("playBtn");
 const recBox = document.getElementById("recBox");
@@ -705,7 +707,7 @@ const stop = async (finished) => {
   }
 };
 
-/*  LIGHT / DARK MODE  */
+/* ================= LIGHT / DARK MODE ================= */
 
 const themeBtn = document.getElementById("themeBtn");
 const darkQuery = window.matchMedia("(prefers-color-scheme: dark)");
@@ -730,7 +732,7 @@ themeBtn.addEventListener("click", () => {
 darkQuery.addEventListener("change", updateThemeBtn);
 updateThemeBtn();
 
-/*  VISUALS  */
+/* ================= VISUALS ================= */
 
 const canvas = document.getElementById("viz");
 const ctx = canvas.getContext("2d");
@@ -858,7 +860,7 @@ const frame = () => {
   requestAnimationFrame(frame);
 };
 
-/*  READOUT  */
+/* ================= READOUT ================= */
 
 const clockEl = document.getElementById("clock");
 const fill = document.getElementById("fill");
