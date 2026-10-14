@@ -48,10 +48,10 @@ const APART = {
 // 0 = unchanged, +3 is noticeably louder, -3 noticeably softer.
 
 const MIX = {
-  clashA: 0,
-  clashB: -3, // B a bit softer while clashing, so it doesn't drown out A
+  clashA: 0, // A is unchanged while clashing
+  clashB: -5, // B a bit softer while clashing, so it doesn't drown out A
   togetherA: 4, // A gets more presence once they play together
-  togetherB: -2,
+  togetherB: -2, // B gets a bit softer once they play together
 };
 
 /*  SOUND PALETTE  */
