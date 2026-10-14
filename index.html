@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <title>Samenklank</title>
+    <!-- Applies the saved light/dark choice before the page draws, so it doesn't flash -->
+    <script>
+      try {
+        var saved = localStorage.getItem("samenklank:theme");
+        if (saved === "light" || saved === "dark")
+          document.documentElement.setAttribute("data-theme", saved);
+      } catch (e) {}
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="wrap">
+      <header class="head">
+        <div class="head-top">
+          <h1>Samenklank</h1>
+          <button class="theme-btn" id="themeBtn" type="button">
+            Dark mode
+          </button>
+        </div>
+        <p class="lede">
+          Two voices start a semitone, a tempo and a sound apart. Over 1 minute
+          and 45 seconds they grow towards each other until they play one chord.
+        </p>
+      </header>
+
+      <section class="stage" aria-label="Visualisation of the two voices">
+        <canvas id="viz" aria-hidden="true"></canvas>
+        <div class="legend" aria-hidden="true">
+          <span class="key key-a"
+            ><i></i><span id="legendA">Voice A</span></span
+          >
+          <span class="key key-b"
+            ><i></i><span id="legendB">Voice B</span></span
+          >
+        </div>
+      </section>
+
+      <div class="voices">
+        <label class="voice-pick voice-a" for="soundA">
+          <span>Voice A</span>
+          <select id="soundA"></select>
+        </label>
+        <label class="voice-pick voice-b" for="soundB">
+          <span>Voice B</span>
+          <select id="soundB"></select>
+        </label>
+        <button class="ghost" id="shuffleBtn" type="button">
+          Shuffle sounds
+        </button>
+      </div>
+
+      <div class="controls">
+        <button id="playBtn" class="play" type="button">Play</button>
+        <span class="clock" id="clock">0:00 <span>/ 1:45</span></span>
+        <label class="rec" id="recWrap"
+          ><input type="checkbox" id="recBox" /> Record to a file</label
+        >
+        <a class="download" id="download" hidden>Download recording</a>
+      </div>
+
+      <div class="timeline" aria-hidden="true">
+        <div class="track"><div class="fill" id="fill"></div></div>
+        <ol class="marks">
+          <li style="--at: 0">Apart</li>
+          <li style="--at: 19.05">Clash</li>
+          <li style="--at: 38.1">Closer</li>
+          <li style="--at: 61.9">Together</li>
+        </ol>
+      </div>
+
+      <dl class="readout">
+        <div>
+          <dt>Pitch gap</dt>
+          <dd id="rPitch">100 cents</dd>
+        </div>
+        <div>
+          <dt>Tempo A / B</dt>
+          <dd id="rTempo">117 / 70 bpm</dd>
+        </div>
+        <div>
+          <dt>Sound</dt>
+          <dd id="rTone">Sharp vs glassy</dd>
+        </div>
+      </dl>
+
+      <section class="about">
+        <h2>How it is made</h2>
+        <p>
+          Everything you hear is generated live in the browser with code.
+          Nothing is recorded in advance.
+        </p>
+        <ul>
+          <li>
+            <b>Pitch.</b> Voice A starts 50 cents flat and voice B 50 cents
+            sharp, a semitone apart. Both move to the middle, so neither voice
+            has to give in completely.
+          </li>
+          <li>
+            <b>Rhythm.</b> Voice A rushes ahead and voice B drags behind. Their
+            tempos meet at 96 bpm.
+          </li>
+          <li>
+            <b>Space.</b> Wear headphones: while they clash, voice A is only in
+            your left ear and voice B only in your right. As they come together,
+            both move into both ears.
+          </li>
+          <li>
+            <b>Sound.</b> Each voice starts rough or bright in its own way and
+            softens towards the other. Pick any two sounds: however different
+            they are, they still end up in one chord.
+          </li>
+        </ul>
+      </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/tone@15.1.22/build/Tone.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>

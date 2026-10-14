@@ -1,0 +1,320 @@
+/* Layout: one listening column — the stage on top, controls and timeline under it, notes for the expo below. */
+:root {
+  --bg: #f2f3f8;
+  --surface: #ffffff;
+  --ink: #171a2b;
+  --muted: #5a607a;
+  --line: #d8dbe6;
+  --voice-a: #de5228;
+  --voice-b: #2c6ad4;
+  --font-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --font-body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+}
+
+/* Dark colours when the computer is set to dark mode and no choice was made on the page */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #10121c;
+    --surface: #181b29;
+    --ink: #eceef6;
+    --muted: #9aa0ba;
+    --line: #2b2f43;
+    --voice-a: #ff7a4d;
+    --voice-b: #5e98ff;
+    color-scheme: dark;
+  }
+}
+
+/* Dark colours when dark mode was chosen with the button */
+:root[data-theme="dark"] {
+  --bg: #10121c;
+  --surface: #181b29;
+  --ink: #eceef6;
+  --muted: #9aa0ba;
+  --line: #2b2f43;
+  --voice-a: #ff7a4d;
+  --voice-b: #5e98ff;
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.55;
+}
+.warp {
+  max-width: 880px;
+  margin: 0 auto;
+  padding-inline: 20px;
+  padding-block: 40px 64px;
+  display: grid;
+  gap: 22px;
+}
+
+/* Header */
+.head-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px 20px;
+}
+.head h1 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(40px, 8vw, 68px);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  margin: 0 0 12px;
+  text-wrap: balance;
+}
+.lede {
+  margin: 0;
+  max-width: 60ch;
+  color: var(--muted);
+  font-size: 18px;
+}
+.theme-btn {
+  font: inherit;
+  font-size: 15px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  cursor: pointer;
+}
+.theme-btn:hover {
+  border-color: var(--ink);
+}
+
+/* Stage */
+.stage {
+  position: relative;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface);
+  overflow: hidden;
+}
+#viz {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16/9;
+  max-width: 100%;
+}
+.key {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.key i {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+.key-a i {
+  background: var(--voice-a);
+}
+.key-b i {
+  background: var(--voice-b);
+}
+
+/* Voice pickers */
+.voices {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px 16px;
+}
+.voice-pick {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+  flex: 1 1 200px;
+}
+.voice-pick span {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+.voice-pick select {
+  font: inherit;
+  font-size: 16px;
+  padding: 9px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  border-left: 5px;
+  background: var(--surface);
+  color: var(--ink);
+  cursor: pointer;
+}
+.voice-a select {
+  border-left-color: var(--voice-a);
+}
+.voice-b select {
+  border-left-color: var(--voice-b);
+}
+.voice-pick select:disabled,
+.ghost:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.ghost {
+  font: inherit;
+  font-size: 15px;
+  padding: 9px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+/* Playback */
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 20px;
+}
+.play {
+  font: inherit;
+  font-weight: 600;
+  font-size: 17px;
+  padding: 11px 22px;
+  border-radius: 999px;
+  border: 1px solid var(--ink);
+  background: var(--ink);
+  color: var(--bg);
+  cursor: pointer;
+}
+.play[aria-pressed="true"] {
+  background: transparent;
+  color: var(--ink);
+}
+.play:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+.clock {
+  font-family: var(--font-mono);
+  font-size: 18px;
+  font-variant-numeric: tabular-nums;
+}
+.clock span {
+  color: var(--muted);
+}
+.rec {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 15px;
+  cursor: pointer;
+}
+.download {
+  font-weight: 600;
+  color: var(--ink);
+}
+:focus-visible {
+  outline: 3px solid var(--voice-b);
+  outline-offset: 2px;
+}
+
+/* Timeline */
+.timeline {
+  display: grid;
+  gap: 8px;
+}
+.track {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--line);
+  overflow: hidden;
+}
+.fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--voice-a), var(--voice-b));
+}
+.marks {
+  position: relative;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  height: 20px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.marks li {
+  position: absolute;
+  left: calc(var(--at) * 1%);
+  white-space: nowrap;
+  padding-left: 6px;
+  border-left: 1px solid var(--line);
+  line-height: 1.2;
+}
+
+/* Readout */
+.readout {
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+}
+.readout div {
+  border-top: 1px solid var(--line);
+  padding-top: 8px;
+  min-width: 0;
+}
+.readout dt {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+.readout dd {
+  margin: 2px 0 0;
+  font-family: var(--font-mono);
+  font-size: 18px;
+  font-variant-numeric: tabular-nums;
+}
+
+/*  About  */
+.about {
+  margin-top: 12px;
+  max-width: 65ch;
+}
+.about h2 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 24px;
+  margin: 0 0 6px;
+}
+.about p {
+  margin: 0 0 10px;
+  color: var(--muted);
+}
+.about ul {
+  margin: 0;
+  padding-left: 20px;
+  display: grid;
+  gap: 6px;
+}
+@media (max-width: 560px) {
+  .marks {
+    font-size: 11px;
+  }
+  .lede {
+    font-size: 16px;
+  }
+}
