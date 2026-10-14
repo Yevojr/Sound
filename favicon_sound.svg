@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Two voices overlapping: orange (A) and blue (B) -->
+  <circle cx="24" cy="32" r="18" fill="#DE5228" fill-opacity="0.9"/>
+  <circle cx="40" cy="32" r="18" fill="#2C6AD4" fill-opacity="0.85"/>
+</svg>
